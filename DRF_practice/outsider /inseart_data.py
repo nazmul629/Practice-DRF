@@ -4,7 +4,7 @@ import json
 URL = 'http://127.0.0.1:8000/create/'
 
 data = {
-    'name':'Sanjida ahamed',
+    'name':'korim ahamed',
     'age':32
 }
 

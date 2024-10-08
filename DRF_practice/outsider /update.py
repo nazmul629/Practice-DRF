@@ -4,9 +4,9 @@ import json
 URL = 'http://127.0.0.1:8000/create/'
 
 data = {
-    'id':13,
-    'name':'billah Islam',
-    'age':34
+    'id':16,
+    'name':'Dr Rased Islam',
+    'age':36
 }
 json_data = json.dumps(data)
 r = requests.put(url=URL, data=json_data)
