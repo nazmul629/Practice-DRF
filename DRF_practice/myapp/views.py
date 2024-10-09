@@ -13,7 +13,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-@api_view(['GET'])
+@api_view(['GET','POST','PUT','PATCH','DELETE'])
 def teacehr_info(request, pk=None):
     if request.method =="GET":
         id = pk
@@ -26,6 +26,49 @@ def teacehr_info(request, pk=None):
             teacher = Teacher.objects.all()
             serializer = TeacherSerilizer(teacher, many=True)
             return Response(serializer.data)
+        
+
+    if request.method =="POST":
+        serializer = TeacherSerilizer(data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            res={ 'msg': 'successfully insert'}
+            return Response(res)
+        return Response(serializer.errors)
+    
+    if request.method =="PUT":
+        id =pk
+        teacher = Teacher.objects.get(id=id)
+        serializer = TeacherSerilizer(teacher,data = request.data)
+        if serializer.is_valid():
+            serializer.save()
+            res = {'msg':"Full Data Updated"}
+            return Response(res) 
+        return Response(serializer.errors) 
+        
+
+    if request.method =="PATCH":
+        id =pk
+        teacher = Teacher.objects.get(id=id)
+        serializer = TeacherSerilizer(teacher, data = request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            res = {'msg':"Partial Data Updated"}
+            return Response(res)
+        return Response(serializer.errors)
+    
+    if request.method =="DELETE":
+        id =pk
+        treacher = Teacher.objects.get(id=id)
+        treacher.delete()
+        res = {'msg':' Successfullly Delete'}
+        return Response(res)
+    return Response()
+
+    
+    
+
+
 
 
 
