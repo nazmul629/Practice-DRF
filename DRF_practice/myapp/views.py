@@ -1,4 +1,6 @@
+from email.mime import base
 from django.shortcuts import render, HttpResponse
+from django.views import View
 from .models import Teacher
 from .serializers import TeacherSerilizer
 
@@ -9,64 +11,127 @@ from .serializers import TeacherSerilizer
 # from rest_framework.decorators import api_view 
 # from rest_framework.response import Response
 
-from rest_framework.decorators import api_view
+# for function base View
+
+# from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 
-@api_view(['GET','POST','PUT','PATCH','DELETE'])
-def teacehr_info(request, pk=None):
-    if request.method =="GET":
+class createTeacher(APIView):
+
+    def get(self, request, pk=None, format=None):
         id = pk
         if id is not None:
             teacher = Teacher.objects.get(id=id)
-
             serializer = TeacherSerilizer(teacher)
-            return Response(serializer.data)
-        else:
-            teacher = Teacher.objects.all()
-            serializer = TeacherSerilizer(teacher, many=True)
-            return Response(serializer.data)
+            return Response(serializer.data)       
         
+        teacher = Teacher.objects.all()
+        serializer = TeacherSerilizer(teacher, many=True) 
+        return Response(serializer.data)
+    
+    def post(self, request,format=None):
+        serializer = TeacherSerilizer(data= request.data)
 
-    if request.method =="POST":
-        serializer = TeacherSerilizer(data = request.data)
         if serializer.is_valid():
             serializer.save()
-            res={ 'msg': 'successfully insert'}
-            return Response(res)
-        return Response(serializer.errors)
+            return Response({"msg":"Successfully insert Data"})
+        return  Response(serializer.errors)
     
-    if request.method =="PUT":
-        id =pk
-        teacher = Teacher.objects.get(id=id)
+    def put(self, request,pk=None, format=None):
+        id = pk
+        teacher = Teacher.objects.get(id =id)
         serializer = TeacherSerilizer(teacher,data = request.data)
         if serializer.is_valid():
             serializer.save()
-            res = {'msg':"Full Data Updated"}
-            return Response(res) 
-        return Response(serializer.errors) 
-        
-
-    if request.method =="PATCH":
-        id =pk
-        teacher = Teacher.objects.get(id=id)
-        serializer = TeacherSerilizer(teacher, data = request.data, partial=True)
+            return Response({'msg':"Data Updated"})
+        return Response(serializer.errors)   
+    
+    def patch(self, request,pk=None, format=None):
+        id = pk
+        teacher = Teacher.objects.get(id =id)
+        serializer = TeacherSerilizer(teacher, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            res = {'msg':"Partial Data Updated"}
-            return Response(res)
+            return Response({'msg':"Data Partialy updated"})
+        print(serializer.errors)
         return Response(serializer.errors)
-    
-    if request.method =="DELETE":
-        id =pk
-        treacher = Teacher.objects.get(id=id)
-        treacher.delete()
+    def delete(self, request,pk=None, format=None):
+        id = pk
+        teacher = Teacher.objects.get(id=id)
+        teacher.delete()
         res = {'msg':' Successfullly Delete'}
         return Response(res)
-    return Response()
+    
+    
+    
+    
 
+
+        
+
+
+
+
+
+
+
+
+# function base View
+
+# @api_view(['GET','POST','PUT','PATCH','DELETE'])
+# def teacehr_info(request, pk=None):
+#     if request.method =="GET":
+#         id = pk
+#         if id is not None:
+#             teacher = Teacher.objects.get(id=id)
+
+#             serializer = TeacherSerilizer(teacher)
+#             return Response(serializer.data)
+#         else:
+#             teacher = Teacher.objects.all()
+#             serializer = TeacherSerilizer(teacher, many=True)
+#             return Response(serializer.data)
+        
+
+#     if request.method =="POST":
+#         serializer = TeacherSerilizer(data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             res={ 'msg': 'successfully insert'}
+#             return Response(res)
+#         return Response(serializer.errors)
     
+#     if request.method =="PUT":
+#         id =pk
+#         teacher = Teacher.objects.get(id=id)
+#         serializer = TeacherSerilizer(teacher,data = request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             res = {'msg':"Full Data Updated"}
+#             return Response(res) 
+#         return Response(serializer.errors) 
+        
+
+#     if request.method =="PATCH":
+#         id =pk
+#         teacher = Teacher.objects.get(id=id)
+#         serializer = TeacherSerilizer(teacher, data = request.data, partial=True)
+#         if serializer.is_valid():
+#             serializer.save()
+#             res = {'msg':"Partial Data Updated"}
+#             return Response(res)
+#         return Response(serializer.errors)
     
+#     if request.method =="DELETE":
+#         id =pk
+#         treacher = Teacher.objects.get(id=id)
+#         treacher.delete()
+#         res = {'msg':' Successfullly Delete'}
+#         return Response(res)
+#     return Response()
+
 
 
 
